@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ZABA GPT APP</title>
+	<!-- Include Material Design CSS -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<!-- Include Material Design JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <style>
+    .title {
+			font-size: 3em;
+			color: #8b0000;
+			text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(0,0,0,0.15);
+			font-family: 'Roboto', sans-serif;
+			text-align: center;
+		}
+
+		form {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+	</style>
+</head>
+<body>
+    <div class="title">ZABA GPT</div>
+	<div class="row">
+		<form class="col s12">
+			<div class="input-field col s12">
+                <label for="input_text">Gitlab url</label>
+                <input id="input_text" type="text" class="validate">
+			</div>
+			<div class="row">
+				<div class="input-field col s12">
+					<label for="textarea1">Output</label>
+					<textarea id="textarea1" class="materialize-textarea"></textarea>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
