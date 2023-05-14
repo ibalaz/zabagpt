@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>ZABA GPT APP</title>
-	<!-- Include Material Design CSS -->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-	<!-- Include Material Design JavaScript -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>ZABA GPT APP</title>
+    <!-- Include Material Design CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Include Material Design JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <style>
     .title {
@@ -23,23 +23,40 @@
 			left: 50%;
 			transform: translate(-50%, -50%);
 		}
-	</style>
+
+		.container {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translateX(-50%) translateY(-50%);
+			z-index: 1;
+		}
+
+    </style>
 </head>
 <body>
-    <div class="title">ZABA GPT</div>
-	<div class="row">
-		<form class="col s12">
-			<div class="input-field col s12">
-                <label for="input_text">Gitlab url</label>
-                <input id="input_text" type="text" class="validate">
-			</div>
-			<div class="row">
-				<div class="input-field col s12">
-					<label for="textarea1">Output</label>
-					<textarea id="textarea1" class="materialize-textarea"></textarea>
-				</div>
-			</div>
-		</form>
+<div class="title">ZABA GPT</div>
+<div class="row container">
+	<div class="container">
+		<form method="post">
+			<label for="input-text">Project ID:</label>
+			<input type="text" id="input-text" name="input-text">
+			<br>
+		  	<ul>
+				{% for link in merge_links %}
+				<li>
+					<a href="{{ url_for('gpt_endpoint', value=link.value) }}">
+						{{ link.label }}
+					</a>
+				</li>
+				{% endfor %}
+    		</ul>
+			<label for="output-text">Merge requests:</label>
+			<input type="text" id="output-text" name="output-text" value="{{ output_text }}" readonly>
+			<br>
+			<button type="submit">Submit</button>
+    	</form>
 	</div>
+</div>
 </body>
 </html>
