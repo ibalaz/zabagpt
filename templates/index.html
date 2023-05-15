@@ -36,14 +36,17 @@
 </head>
 <body>
 <div class="title">ZABA GPT</div>
-<div class="row container">
+<div class="column container">
 	<div class="container">
 		<form method="post">
-			<label for="input-text">Project ID:</label>
+			<label for="input-text">Project URL:</label>
 			<input type="text" id="input-text" name="input-text">
 			<br>
+			<p>
+				Commits:
+			</p>
 		  	<ul>
-				{% for link in merge_links %}
+				{% for link in commit_links %}
 				<li>
 					<a href="{{ url_for('gpt_endpoint', value=link.value) }}">
 						{{ link.label }}
@@ -51,8 +54,12 @@
 				</li>
 				{% endfor %}
     		</ul>
-			<label for="output-text">Merge requests:</label>
-			<input type="text" id="output-text" name="output-text" value="{{ output_text }}" readonly>
+			<div class="row">
+				<p>
+					Suggestions:
+				</p>
+				{{output_text}}
+			</div>
 			<br>
 			<button type="submit">Submit</button>
     	</form>
