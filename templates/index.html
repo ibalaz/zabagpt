@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-     <style>
+    <style>
         .title {
             font-size: 3em;
             color: #8b0000;
@@ -29,7 +29,6 @@
 
         .container {
             width: 100%;
-            max-width: 600px;
         }
 
         .input-field {
@@ -44,7 +43,7 @@
             display: none;
         }
 
-        #markdown-container {
+        #markdown-container, #added-lines {
             height: calc(60vh - 20px);
             overflow-y: auto;
             padding: 10px;
@@ -69,20 +68,32 @@
             <ul class="collection">
                 {% for link in commit_links %}
                 <li class="collection-item">
-                    <a id="link{{ loop.index }}" href="#" onclick="fetchContent('{{ link.value }}'); return false;">{{ link.label }}</a>
+                    <a id="link{{ loop.index }}" href="#" onclick="fetchContent('{{ link.value }}'); return false;">{{
+                        link.label }}</a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
         <div class="col s12">
-            <button type="submit" id="myButton" class="btn waves-effect waves-light" style="width: 100%;">Submit</button>
+            <button type="submit" id="myButton" class="btn waves-effect waves-light" style="width: 100%;">Submit
+            </button>
         </div>
-        <div class="col s12 suggestions-container">
-            <p>Suggestions:</p>
-            <div class="spinner">
-                <img src="assets/spinner.gif" alt="Loading..." />
+        <div class="spinner center">
+            <img src="static/spinner.gif" alt="Loading..."/>
+        </div>
+        <div class="row" style="width:1000px;">
+            <div class="col s12 m6">
+                <div class="suggestions-container">
+                    <p>Input code:</p>
+                    <div id="added-lines" style="font-family: 'Courier New', Courier, monospace;"></div>
+                </div>
             </div>
-            <div id="markdown-container"></div>
+            <div class="col s12 m6">
+                <div class="suggestions-container">
+                    <p>Optimized code:</p>
+                    <div id="markdown-container"></div>
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -102,14 +113,19 @@
     function updateMarkdown(content) {
          // Get a reference to the markdown container
             var markdownContainer = $('#markdown-container');
+            var markdownContainer2 = $('#added-lines');
+
+            console.log(content)
 
             // Render the Markdown text within the container using markdown-it
             var md = window.markdownit();
-            markdownContainer.html(md.render(content));
+            markdownContainer.html(md.render(content.output_text));
+            markdownContainer2.html(md.render(content.added_lines));
 
             // Show the markdown container and hide the spinner
             toggleSpinner(false);
             markdownContainer.show();
+            markdownContainer2.show();
 
     }
 
@@ -121,10 +137,6 @@
             data: { value: value },  // Pass the request argument value
             success: function(response) {
                 updateMarkdown(response);  // Update the Markdown content
-            },
-            complete: function() {
-                // Call fetchContent() again after a delay (e.g., 5 seconds)
-                setTimeout(fetchContent(value), 5000);
             }
         });
     }
@@ -139,6 +151,8 @@
                 });
             {% endfor %}
         });
+
+
 </script>
 
 </body>

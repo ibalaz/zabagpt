@@ -1,14 +1,13 @@
 import openai
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 
 # Set the GitLab project URL and API token
 api_token = 'glpat-S1cAUFXxzoK4qNgRsnag'
 openai.api_key = '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'
 
-app = Flask(__name__)
-output_text = ''
+app = Flask(__name__, static_url_path='/static')
 project_id = ''
 
 
@@ -108,7 +107,8 @@ def gpt_endpoint():
     # Send a GET request to the API endpoint
     response = requests.get(endpoint, headers=headers)
     print('Response: ', response.json())
-    global output_text
+    output_text = ''
+    added_lines = ''
 
     for commit in response.json():
         added_lines = extract_added_lines(commit['diff'])
@@ -123,11 +123,10 @@ def gpt_endpoint():
             stop=None,
             temperature=0.7,
         )
-        print('response2: ', response2.choices[0].text)
-        output_text += 'Added lines: ' + str(added_lines) + ' Optimization: ' + response2.choices[0].text
+        output_text += response2.choices[0].text
         print('Output: ', output_text)
 
-    return output_text
+    return jsonify(output_text=output_text, added_lines=str(added_lines))
 
 
 if __name__ == '__main__':
