@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request
-import requests
-import gitlab
 import openai
+import requests
+from flask import Flask, render_template, request
+import markdown
+
 
 # Set the GitLab project URL and API token
 api_token = 'glpat-S1cAUFXxzoK4qNgRsnag'
-openai.api_key = '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'
+openai.api_key = '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'
 
 app = Flask(__name__)
 output_text = ''
@@ -26,6 +27,19 @@ def extract_project_path(url):
     project_path = url[second_slash_index + 1:]
 
     return project_path
+
+
+def extract_added_lines(diff):
+    # Split diff into lines
+    diff_lines = diff.split('\n')
+
+    # Keep only added lines
+    added_lines = [line for line in diff_lines if line.startswith('+')]
+
+    # Exclude lines that start with '+++'
+    added_lines = [line for line in added_lines if not line.startswith('+++')]
+
+    return added_lines
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -95,29 +109,26 @@ def gpt_endpoint():
     # Send a GET request to the API endpoint
     response = requests.get(endpoint, headers=headers)
     print('Response: ', response.json())
-    # head_sha = response.json()["diff_refs"]["head_sha"]
-    # base_sha = response.json()["diff_refs"]["base_sha"]
-    # print('Head_sha: ', head_sha)
-    # print('Base_sha: ', base_sha)
-
-    diff = response.json()[0]['diff']
-
-    print("diff: ", diff)
     global output_text
 
-    prompt = f"Optimize code in this diff {diff} and explain"
-    response2 = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=2000,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    output_text += response2.choices[0].text
-    print('Output: ', output_text)
+    for commit in response.json():
+        added_lines = extract_added_lines(commit['diff'])
+        print("Added lines: ", added_lines)
 
-    return render_template('index.html', output_text=output_text)
+        prompt = f"Optimize this added lines in commit {added_lines} and explain"
+        response2 = openai.Completion.create(
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=2300,
+            n=1,
+            stop=None,
+            temperature=0.7,
+        )
+        print('response2: ', response2.choices[0].text)
+        output_text += 'Added lines: ' + str(added_lines) + '\n Optimization: ' + response2.choices[0].text + '\n'
+        print('Output: ', output_text)
+
+    return output_text
 
 
 if __name__ == '__main__':
