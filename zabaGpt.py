@@ -1,7 +1,6 @@
 import openai
 import requests
 from flask import Flask, render_template, request
-import markdown
 
 
 # Set the GitLab project URL and API token
@@ -125,7 +124,7 @@ def gpt_endpoint():
             temperature=0.7,
         )
         print('response2: ', response2.choices[0].text)
-        output_text += 'Added lines: ' + str(added_lines) + '\n Optimization: ' + response2.choices[0].text + '\n'
+        output_text += 'Added lines: ' + str(added_lines) + ' Optimization: ' + response2.choices[0].text
         print('Output: ', output_text)
 
     return output_text
